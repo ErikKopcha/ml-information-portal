@@ -25,18 +25,22 @@ class MarvelService {
       `${this._apiBase}characters/${id}?${this._apiKey}`,
     );
 
-    return this._transformCharacter(res);
+    return this._transformCharacter(res.data.results[0]);
   };
 
-  _transformCharacter = res => {
-    const { name, description, thumbnail, urls } = res.data.results[0];
+  _transformCharacter = char => {
+    if (!char)
+      return console.error('_transformCharacter: char info is not defined');
 
-    if (!res.data.results[0])
-      return console.error('_transformCharacter: result is not defined');
+    const { name, description, thumbnail, urls } = char;
 
     return {
       name: name,
-      description: description,
+      description: `${
+        description
+          ? `${description.slice(0, 210)}...`
+          : `There is no description for this character`
+      }`,
       thumbnail: `${thumbnail.path}.${thumbnail.extension}`,
       homepage: urls[0].url,
       wiki: urls[1].url,
