@@ -32,9 +32,10 @@ class MarvelService {
     if (!char)
       return console.error('_transformCharacter: char info is not defined');
 
-    const { name, description, thumbnail, urls } = char;
+    const { name, description, thumbnail, urls, id } = char;
 
     return {
+      id,
       name: name,
       description: `${
         description

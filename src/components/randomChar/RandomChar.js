@@ -8,10 +8,6 @@ import Error from '../errorMessage/Error';
 class RandomChar extends Component {
   marvelService = new MarvelService();
 
-  componentDidMount() {
-    this.updateChar();
-  }
-
   state = {
     char: {
       name: null,
@@ -24,6 +20,10 @@ class RandomChar extends Component {
     error: false,
     wait: false,
   };
+
+  componentDidMount() {
+    this.updateChar();
+  }
 
   onCharLoaded = char => {
     this.setState({ char, loading: false, error: false, wait: false });
@@ -47,8 +47,14 @@ class RandomChar extends Component {
     const { char, loading, error, wait } = this.state;
 
     return (
-      <div className={`randomchar ${wait ? `opacity` : ''}`}>
-        {loading ? <Spinner /> : error ? <Error /> : <View char={char} />}
+      <div className={`randomchar ${loading || wait ? `opacity` : ''}`}>
+        {loading || wait ? (
+          <Spinner />
+        ) : error ? (
+          <Error />
+        ) : (
+          <View char={char} />
+        )}
         <div className="randomchar__static">
           <p className="randomchar__title">
             Random character for today!
@@ -71,9 +77,23 @@ const View = char => {
     char: { name, description, thumbnail, homepage, wiki },
   } = char;
 
+  let imgStyle = { objectFit: 'cover' };
+
+  if (
+    thumbnail ===
+    'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
+  ) {
+    imgStyle = { objectFit: 'contain' };
+  }
+
   return (
     <div className="randomchar__block">
-      <img src={thumbnail} alt="Random character" className="randomchar__img" />
+      <img
+        src={thumbnail}
+        style={imgStyle}
+        alt="Random character"
+        className="randomchar__img"
+      />
       <div className="randomchar__info">
         <p className="randomchar__name">{name}</p>
         <p className="randomchar__descr">{description}</p>
