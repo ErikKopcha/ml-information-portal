@@ -38,7 +38,7 @@ class CharList extends Component {
         ) : error ? (
           <Error />
         ) : (
-          <CharItems chars={chars} />
+          <CharItems chars={chars} onCharSelected={this.props.onCharSelected} />
         )}
 
         <button className="button button__main button__long">
@@ -49,8 +49,8 @@ class CharList extends Component {
   }
 }
 
-const CharItems = chars => {
-  const charItems = chars.chars.map((el, i) => {
+const CharItems = ({ chars, onCharSelected}) => {
+  const charItems = chars.map((el) => {
     const { thumbnail, name, id } = el;
 
     let imgStyle = { objectFit: 'cover' };
@@ -63,7 +63,7 @@ const CharItems = chars => {
     }
 
     return (
-      <li className="char__item" key={id}>
+      <li onClick={() => { onCharSelected(id) }} className="char__item" key={id}>
         <img style={imgStyle} src={thumbnail} alt={name} />
         <div className="char__name">{name}</div>
       </li>
