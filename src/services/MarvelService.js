@@ -32,7 +32,7 @@ class MarvelService {
     if (!char)
       return console.error('_transformCharacter: char info is not defined');
 
-    const { name, description, thumbnail, urls, id } = char;
+    const { name, description, thumbnail, urls, id, comics } = char;
 
     return {
       id,
@@ -45,6 +45,7 @@ class MarvelService {
       thumbnail: `${thumbnail.path}.${thumbnail.extension}`,
       homepage: urls[0].url,
       wiki: urls[1].url,
+      comics: comics.items
     };
   };
 }

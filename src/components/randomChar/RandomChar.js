@@ -46,15 +46,14 @@ class RandomChar extends Component {
   render() {
     const { char, loading, error, wait } = this.state;
 
+    const isLoading = loading || wait ? <Spinner /> : null;
+    const isError = error ? <Error /> : null;
+    const isRender = (!error && !loading && !wait) ? <View char={char} /> : null;
+
     return (
       <div className={`randomchar ${loading || wait ? `opacity` : ''}`}>
-        {loading || wait ? (
-          <Spinner />
-        ) : error ? (
-          <Error />
-        ) : (
-          <View char={char} />
-        )}
+        {isLoading || isError || isRender}
+
         <div className="randomchar__static">
           <p className="randomchar__title">
             Random character for today!

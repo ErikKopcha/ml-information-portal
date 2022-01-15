@@ -69,6 +69,10 @@ main {
   animation: pulse 1.5s ease-in-out 0.5s infinite;
 }
 
+.red-text {
+  color: red
+}
+
 @keyframes pulse {
   0% {
     opacity: 1;
