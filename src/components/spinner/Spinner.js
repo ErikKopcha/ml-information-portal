@@ -2,7 +2,7 @@ import './spinner.scss';
 
 const Spinner = () => {
   return (
-    <div class="spinner-container">
+    <div className="spinner-container">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         style={{ margin: '0 auto', background: 'none', display: 'block' }}
