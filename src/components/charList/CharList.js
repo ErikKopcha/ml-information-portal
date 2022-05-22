@@ -3,6 +3,7 @@ import './charList.scss';
 import Spinner from '../spinner/Spinner';
 import Error from '../errorMessage/Error';
 import MarvelService from '../../services/MarvelService';
+import PropTypes from 'prop-types';
 
 const CharList = ({ onCharSelected, selectedCharId }) => {
   const marvelService = new MarvelService();
@@ -108,8 +109,8 @@ const CharItems = ({ chars, onCharSelected, selectedCharId }) => {
   return <ul className="char__grid">{charItems}</ul>;
 };
 
-// CharList.propTypes = {
-//   onCharSelected: PropTypes.func.isRequired
-// }
+CharList.propTypes = {
+  onCharSelected: PropTypes.func.isRequired,
+};
 
 export default CharList;
