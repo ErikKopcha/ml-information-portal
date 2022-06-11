@@ -15,17 +15,24 @@ const App = () => {
   };
 
   return (
-    <div className='app'>
+    <div className="app">
       <AppHeader />
       <main>
-        <RandomChar />
-        <div className='char__content'>
-          <CharList onCharSelected={onCharSelected} selectedCharId={selectedChar} />
+        <ErrorBoundary>
+          <RandomChar />
+        </ErrorBoundary>
+        <div className="char__content">
+          <ErrorBoundary>
+            <CharList
+              onCharSelected={onCharSelected}
+              selectedCharId={selectedChar}
+            />
+          </ErrorBoundary>
           <ErrorBoundary>
             <CharInfo charId={selectedChar} />
           </ErrorBoundary>
         </div>
-        <img className='bg-decoration' src={decoration} alt='vision' />
+        <img className="bg-decoration" src={decoration} alt="vision" />
       </main>
     </div>
   );
