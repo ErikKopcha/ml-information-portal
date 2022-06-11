@@ -23,6 +23,14 @@ const useMarvelService = () => {
     return _transformCharacter(res.data.results[0]);
   };
 
+  const getAllComics = async (offset = _baseOffset) => {
+    const res = await request({
+      url: `${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`,
+    });
+
+    return res.data.results.map(_transformComics);
+  };
+
   const _transformCharacter = char => {
     if (!char)
       return console.error('_transformCharacter: char info is not defined');
@@ -44,13 +52,28 @@ const useMarvelService = () => {
     };
   };
 
+  const _transformComics = comicsItem => {
+    if (!comicsItem)
+      throw new Error('_transformCharacter: comicsItem info is not defined');
+
+    const { title, prices, thumbnail, id, } = comicsItem;
+
+    return {
+      id,
+      title,
+      price: prices[0]?.price || 0,
+      thumbnail: `${thumbnail.path}.${thumbnail.extension}`,
+    };
+  };
+
   return {
     loading,
     error,
     clearError,
     getAllCharacters,
-    getCharacter
-  }
+    getCharacter,
+    getAllComics,
+  };
 }
 
 export default useMarvelService;
