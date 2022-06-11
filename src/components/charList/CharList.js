@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import './charList.scss';
-import Spinner from '../spinner/Spinner';
 import Error from '../errorMessage/Error';
 import useMarvelService from '../../services/MarvelService';
 import PropTypes from 'prop-types';
@@ -50,18 +49,16 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
     ) : null;
 
   return (
-    <div className={`char__list ${newItemsLoading ? 'opacity' : ''}`}>
+    <div className="char__list">
       {isError || isRender}
       <button
-        onClick={() => {
-          onRequest(offset);
-        }}
-        className="button button__main button__long"
+        onClick={() => { onRequest(offset); }}
+        className={`${newItemsLoading ? 'opacity' : ''} button button__main button__long`}
         style={{ display: charEnded ? 'none' : 'block' }}
       >
-        <div className="inner">
+        <p className="inner">
           {loading || newItemsLoading ? `loading...` : `load more`}
-        </div>
+        </p>
       </button>
     </div>
   );

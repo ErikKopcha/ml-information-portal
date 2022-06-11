@@ -32,10 +32,6 @@ const CharInfo = ({ charId }) => {
     setWait(false);
   };
 
-  const onError = () => {
-    setWait(false);
-  };
-
   const isSkeleton = !(char || loading || error) ? <Skeleton /> : null;
   const isError = error ? <Error /> : null;
   const isSpinner = loading ? <Spinner /> : null;
