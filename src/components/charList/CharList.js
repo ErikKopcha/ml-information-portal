@@ -2,26 +2,24 @@ import { useEffect, useState } from 'react';
 import './charList.scss';
 import Spinner from '../spinner/Spinner';
 import Error from '../errorMessage/Error';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import PropTypes from 'prop-types';
 
 const CharList = ({ onCharSelected, selectedCharId }) => {
-  const marvelService = new MarvelService();
   const [chars, setChars] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [newItemsLoading, setNewItemsLoading] = useState(false);
-  const [error, setError] = useState(false);
   const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
+
+  const { loading, error, getAllCharacters } = useMarvelService();
 
   useEffect(() => {
     onRequest();
   }, []);
 
   const onRequest = offset => {
-    onCharListLoading();
-
-    marvelService.getAllCharacters(offset).then(onCharLoaded).catch(onError);
+    setNewItemsLoading(true);
+    getAllCharacters(offset).then(onCharLoaded).catch(onError);
   };
 
   const onCharLoaded = newChars => {
@@ -32,27 +30,18 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
     }
 
     setChars(chars => [...chars, ...newChars]);
-    setLoading(false);
-    setError(false);
     setNewItemsLoading(false);
     setOffset(offset => offset + newChars.length);
     setCharEnded(ended);
   };
 
-  const onCharListLoading = () => {
-    setNewItemsLoading(true);
-  };
-
   const onError = () => {
-    setLoading(false);
-    setError(true);
     setNewItemsLoading(false);
   };
 
-  const isLoading = loading ? <Spinner /> : null;
   const isError = error ? <Error /> : null;
   const isRender =
-    !loading && !error ? (
+    !error ? (
       <CharItems
         chars={chars}
         onCharSelected={id => { onCharSelected(id) }}
@@ -62,7 +51,7 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
 
   return (
     <div className={`char__list ${newItemsLoading ? 'opacity' : ''}`}>
-      {isLoading || isError || isRender}
+      {isError || isRender}
       <button
         onClick={() => {
           onRequest(offset);
