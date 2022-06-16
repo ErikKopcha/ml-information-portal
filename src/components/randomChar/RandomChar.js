@@ -13,18 +13,22 @@ const RandomChar = () => {
     homepage: null,
     wiki: null,
   });
-  
+
   const [wait, setWait] = useState(false);
 
   const { loading, error, getCharacter, clearError } = useMarvelService();
 
+  // fix useEffect (react 18), state vrs is not working
+  let isPending = false;
+
   useEffect(() => {
-    updateChar();
+    if (!isPending) updateChar();
 
     return () => {};
   }, []);
 
   const onCharLoaded = char => {
+    isPending = false;
     setChar(char);
     setWait(false);
   };
@@ -34,6 +38,8 @@ const RandomChar = () => {
   };
 
   const updateChar = () => {
+    isPending = true;
+
     clearError();
     setWait(true);
 

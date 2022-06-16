@@ -12,16 +12,23 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
 
   const { loading, error, getAllCharacters } = useMarvelService();
 
+  // fix useEffect (react 18), state vrs is not working
+  let isPending = false;
+
   useEffect(() => {
-    onRequest();
+    if (!isPending) {
+      onRequest();
+    }
   }, []);
 
   const onRequest = offset => {
+    isPending = true;
     setNewItemsLoading(true);
     getAllCharacters(offset).then(onCharLoaded).catch(onError);
   };
 
   const onCharLoaded = newChars => {
+    isPending = false;
     let ended = false;
 
     if (newChars.length < 9) {
@@ -39,21 +46,26 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
   };
 
   const isError = error ? <Error /> : null;
-  const isRender =
-    !error ? (
-      <CharItems
-        chars={chars}
-        onCharSelected={id => { onCharSelected(id) }}
-        selectedCharId={selectedCharId}
-      />
-    ) : null;
+  const isRender = !error ? (
+    <CharItems
+      chars={chars}
+      onCharSelected={id => {
+        onCharSelected(id);
+      }}
+      selectedCharId={selectedCharId}
+    />
+  ) : null;
 
   return (
     <div className="char__list">
       {isError || isRender}
       <button
-        onClick={() => { onRequest(offset); }}
-        className={`${newItemsLoading ? 'opacity' : ''} button button__main button__long`}
+        onClick={() => {
+          onRequest(offset);
+        }}
+        className={`${
+          newItemsLoading ? 'opacity' : ''
+        } button button__main button__long`}
         style={{ display: charEnded ? 'none' : 'block' }}
       >
         <p className="inner">
