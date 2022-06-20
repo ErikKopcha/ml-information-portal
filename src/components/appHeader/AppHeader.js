@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import "./appHeader.scss";
+import './appHeader.scss';
 
 const AppHeader = () => {
   return (

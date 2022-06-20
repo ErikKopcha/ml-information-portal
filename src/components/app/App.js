@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AppHeader from '../appHeader/AppHeader';
-import { HomePage, ComicsPage } from '../pages';
+import { HomePage, ComicsPage, Page404, SingleComicPage } from '../pages';
 
 const App = () => {
   const [selectedChar, setChar] = useState(null);
@@ -14,7 +14,7 @@ const App = () => {
     <Router>
       <div className="app">
         <AppHeader />
-        
+
         <main>
           <Routes>
             <Route
@@ -26,7 +26,9 @@ const App = () => {
                 />
               }
             />
-            <Route path="/comics" element={ <ComicsPage /> } />
+            <Route path="/comics" element={<ComicsPage />} />
+            <Route path="/comics/:comicId" element={<SingleComicPage />} />
+            <Route path="*" element={<Page404 />} />
           </Routes>
         </main>
       </div>
