@@ -68,11 +68,11 @@ const useMarvelService = () => {
     return {
       id,
       title,
-      price: prices[0]?.price || 0,
+      price: prices[0]?.price || `0$`,
       thumbnail: `${thumbnail.path}.${thumbnail.extension}`,
       description,
       pageCount,
-      languages: textObjects[0]?.language,
+      languages: textObjects[0]?.language || 'en-us',
     };
   };
 
