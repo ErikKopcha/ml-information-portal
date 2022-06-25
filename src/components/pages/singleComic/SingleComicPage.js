@@ -44,8 +44,12 @@ const View = ({ comic }) => {
       <div className="single-comic__info">
         <h2 className="single-comic__name">{title}</h2>
         <p className="single-comic__descr">{description}</p>
-        <p className="single-comic__descr">{pageCount} p.</p>
-        <p className="single-comic__descr">Language: {languages || '-'}</p>
+        <p className="single-comic__descr">
+          Pages: <b>{pageCount}</b>
+        </p>
+        <p className="single-comic__descr">
+          Language: <b>{languages || '-'}</b>
+        </p>
         <div className="single-comic__price">{price}</div>
       </div>
 
