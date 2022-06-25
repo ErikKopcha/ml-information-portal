@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
 import './charList.scss';
 import Error from '../errorMessage/Error';
 import useMarvelService from '../../services/MarvelService';
-import PropTypes from 'prop-types';
 
 const CharList = ({ onCharSelected, selectedCharId }) => {
   const [chars, setChars] = useState([]);
@@ -77,7 +79,7 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
 };
 
 const CharItems = ({ chars, onCharSelected, selectedCharId }) => {
-  const charItems = chars.map(el => {
+  const charItems = chars.map((el, i) => {
     const { thumbnail, name, id } = el;
     const isSelected = selectedCharId === id ? 'char__item_selected' : '';
 
@@ -91,20 +93,32 @@ const CharItems = ({ chars, onCharSelected, selectedCharId }) => {
     }
 
     return (
-      <li
-        onClick={() => {
-          onCharSelected(id);
-        }}
-        className={`char__item ${isSelected}`}
-        key={id}
-      >
-        <img style={imgStyle} src={thumbnail} alt={name} />
-        <div className="char__name">{name}</div>
-      </li>
+      <CSSTransition key={id} timeout={500} classNames="char__item">
+        <li
+          onClick={() => {
+            onCharSelected(id);
+          }}
+          onKeyPress={e => {
+            if (e.key === ' ' || e.key === 'Enter') {
+              onCharSelected(id);
+            }
+          }}
+          className={`char__item ${isSelected}`}
+        >
+          <img style={imgStyle} src={thumbnail} alt={name} />
+          <div className="char__name">{name}</div>
+        </li>
+      </CSSTransition>
     );
   });
 
-  return <ul className="char__grid">{charItems}</ul>;
+  return (
+    <ul className="char__grid">
+      <TransitionGroup component={null}>
+        {charItems}
+      </TransitionGroup>
+    </ul>
+  );
 };
 
 CharList.propTypes = {
