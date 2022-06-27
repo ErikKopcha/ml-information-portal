@@ -1,9 +1,10 @@
 import './singleCharacterPage.scss';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useMarvelService from '../../../services/MarvelService';
 import Spinner from '../../spinner/Spinner';
 import Error from '../../errorMessage/Error';
+import AppBanner from '../../appBanner/AppBanner';
 
 const SingleCharacterPage = () => {
   const { id } = useParams();
@@ -36,13 +37,25 @@ const View = ({ data }) => {
     const { name, fullDescription, thumbnail } = data;
 
   return (
-    <div className="single-character">
-      <img src={thumbnail} alt={name} className="single-character__char-img" />
-      <div className="single-character__info">
-        <h2 className="single-character__name">{name}</h2>
-        <p className="single-character__descr">{fullDescription}</p>
+    <>
+      <AppBanner />
+
+      <div className="single-character">
+        <img
+          src={thumbnail}
+          alt={name}
+          className="single-character__char-img"
+        />
+        <div className="single-character__info">
+          <h2 className="single-character__name">{name}</h2>
+          <p className="single-character__descr">{fullDescription}</p>
+        </div>
+
+        <Link to={'/'} className="single-character__back">
+          Back to all
+        </Link>
       </div>
-    </div>
+    </>
   );
 };
 

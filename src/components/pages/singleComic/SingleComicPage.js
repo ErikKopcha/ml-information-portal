@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import useMarvelService from '../../../services/MarvelService';
 import Spinner from '../../spinner/Spinner';
 import Error from '../../errorMessage/Error';
+import AppBanner from '../../appBanner/AppBanner';
 
 const SingleComicPage = () => { 
   const { id } = useParams();
@@ -39,24 +40,30 @@ const View = ({ comic }) => {
   const { title, description, pageCount, thumbnail, languages, price } = comic;
 
   return (
-    <div className="single-comic">
-      <img src={thumbnail} alt="x-men" className="single-comic__img" />
-      <div className="single-comic__info">
-        <h2 className="single-comic__name">{title}</h2>
-        <p className="single-comic__descr">{description}</p>
-        <p className="single-comic__descr">
-          Pages: <b>{pageCount}</b>
-        </p>
-        <p className="single-comic__descr">
-          Language: <b>{languages || '-'}</b>
-        </p>
-        <div className="single-comic__price">{price ? `${price}$` : 'NOT AVAILABLE'}</div>
-      </div>
+    <>
+      <AppBanner />
 
-      <Link to={'/comics'} className="single-comic__back">
-        Back to all
-      </Link>
-    </div>
+      <div className="single-comic">
+        <img src={thumbnail} alt="x-men" className="single-comic__img" />
+        <div className="single-comic__info">
+          <h2 className="single-comic__name">{title}</h2>
+          <p className="single-comic__descr">{description}</p>
+          <p className="single-comic__descr">
+            Pages: <b>{pageCount}</b>
+          </p>
+          <p className="single-comic__descr">
+            Language: <b>{languages || '-'}</b>
+          </p>
+          <div className="single-comic__price">
+            {price ? `${price}$` : 'NOT AVAILABLE'}
+          </div>
+        </div>
+
+        <Link to={'/comics'} className="single-comic__back">
+          Back to all
+        </Link>
+      </div>
+    </>
   );
 }
 
