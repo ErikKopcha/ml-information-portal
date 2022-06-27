@@ -23,6 +23,14 @@ const useMarvelService = () => {
     return _transformCharacter(res.data.results[0]);
   };
 
+  const getCharacterByName = async name => {
+    const res = await request({
+      url: `${_apiBase}characters?name=${name}&${_apiKey}`,
+    });
+
+    return res.data.results.map(_transformCharacter);
+  };
+
   const getAllComics = async (offset = _baseOffset) => {
     const res = await request({
       url: `${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`,
@@ -31,7 +39,7 @@ const useMarvelService = () => {
     return res.data.results.map(_transformComics);
   };
 
-  const getComic = async (id) => {
+  const getComic = async id => {
     const res = await request({
       url: `${_apiBase}comics/${id}?${_apiKey}`,
     });
@@ -52,7 +60,8 @@ const useMarvelService = () => {
         description
           ? `${description.slice(0, 210)}...`
           : `There is no description for this character`
-      }`,
+        }`,
+      fullDescription: description,
       thumbnail: `${thumbnail.path}.${thumbnail.extension}`,
       homepage: urls[0].url,
       wiki: urls[1].url,
@@ -61,9 +70,18 @@ const useMarvelService = () => {
   };
 
   const _transformComics = comicsItem => {
-    if (!comicsItem) throw new Error('_transformCharacter: comicsItem info is not defined');
+    if (!comicsItem)
+      throw new Error('_transformCharacter: comicsItem info is not defined');
 
-    const { title, prices, thumbnail, id, description, pageCount, textObjects } = comicsItem;
+    const {
+      title,
+      prices,
+      thumbnail,
+      id,
+      description,
+      pageCount,
+      textObjects,
+    } = comicsItem;
 
     return {
       id,
@@ -81,6 +99,7 @@ const useMarvelService = () => {
     error,
     clearError,
     getAllCharacters,
+    getCharacterByName,
     getCharacter,
     getAllComics,
     getComic,

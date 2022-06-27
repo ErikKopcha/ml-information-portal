@@ -7,19 +7,19 @@ import Spinner from '../../spinner/Spinner';
 import Error from '../../errorMessage/Error';
 
 const SingleComicPage = () => { 
-  const { comicId } = useParams();
+  const { id } = useParams();
   const [comic, setComic] = useState(null);
 
   const { loading, error, getComic, clearError } = useMarvelService();
 
   useEffect(() => {
     updateComic();
-  }, [comicId]);
+  }, [id]);
 
   const updateComic = () => {
     clearError();
 
-    getComic(comicId).then(onComicLoaded);
+    getComic(id).then(onComicLoaded);
   };
 
   const onComicLoaded = comic => {
