@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet';
 
 import './singleComicPage.scss';
 import { Link, useParams } from 'react-router-dom';
@@ -41,6 +42,11 @@ const View = ({ comic }) => {
 
   return (
     <>
+      <Helmet>
+        <meta name="description" content={`${title} comic book`} />
+        <title>{title}</title>
+      </Helmet>
+
       <AppBanner />
 
       <div className="single-comic">

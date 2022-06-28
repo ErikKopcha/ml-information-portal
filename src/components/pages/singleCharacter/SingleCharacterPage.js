@@ -1,6 +1,8 @@
-import './singleCharacterPage.scss';
+import { Helmet } from 'react-helmet';
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+
+import './singleCharacterPage.scss';
 import useMarvelService from '../../../services/MarvelService';
 import Spinner from '../../spinner/Spinner';
 import Error from '../../errorMessage/Error';
@@ -38,6 +40,11 @@ const View = ({ data }) => {
 
   return (
     <>
+      <Helmet>
+        <meta name="description" content={`${name} character book`} />
+        <title>{name}</title>
+      </Helmet>
+
       <AppBanner />
 
       <div className="single-character">
