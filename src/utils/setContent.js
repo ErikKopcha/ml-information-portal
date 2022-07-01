@@ -9,7 +9,7 @@ import Error from '../components/errorMessage/Error';
  * @param { JSX.Element } props.ViewComponent
  * @param { Object | null } props.data
  * @param { Function | null } props.uniqueLoadingBehavior
- * @returns { JSX.Element }
+ * @returns { JSX.Element | Function }
  */
 export const setContent = (props = {}) => {
   const {
