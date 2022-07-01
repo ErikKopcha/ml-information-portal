@@ -4,15 +4,15 @@ import { useState, useEffect } from 'react';
 
 import './singleCharacterPage.scss';
 import useMarvelService from '../../../services/MarvelService';
-import Spinner from '../../spinner/Spinner';
-import Error from '../../errorMessage/Error';
 import AppBanner from '../../appBanner/AppBanner';
+import { processTypes } from '../../../types/types';
+import { setContent } from '../../../utils/setContent';
 
 const SingleCharacterPage = () => {
   const { id } = useParams();
   const [data, setData] = useState(null);
 
-  const { loading, error, getCharacter, clearError } = useMarvelService();
+  const { process, setProcess, getCharacter, clearError } = useMarvelService();
 
   useEffect(() => {
     updateComic();
@@ -21,22 +21,22 @@ const SingleCharacterPage = () => {
   const updateComic = () => {
     clearError();
 
-    getCharacter(id).then(onCharacterLoaded);
+    getCharacter(id).then(onCharacterLoaded).then(() => setProcess(processTypes.confirmed));
   };
 
   const onCharacterLoaded = data => {
     setData(data);
   };
 
-  const isError = error ? <Error /> : null;
-  const isSpinner = loading ? <Spinner /> : null;
-  const isRender = !(loading || error || !data) ? <View data={data} /> : null;
-
-  return isError || isSpinner || isRender;
+  return setContent({
+    data,
+    process,
+    ViewComponent: View,
+  });
 };
 
 const View = ({ data }) => {
-    const { name, fullDescription, thumbnail } = data;
+  const { name, fullDescription, thumbnail } = data;
 
   return (
     <>

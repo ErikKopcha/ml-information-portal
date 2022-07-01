@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import './charList.scss';
-import Error from '../errorMessage/Error';
+import { setContent } from '../../utils/setContent';
 import useMarvelService from '../../services/MarvelService';
+import { processTypes } from '../../types/types';
+import Spinner from '../spinner/Spinner';
+import './charList.scss';
 
 const CharList = ({ onCharSelected, selectedCharId }) => {
   const [chars, setChars] = useState([]);
@@ -12,25 +14,22 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
   const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
 
-  const { loading, error, getAllCharacters } = useMarvelService();
-
-  // fix useEffect (react 18), state vrs is not working
-  let isPending = false;
+  const { process, setProcess, getAllCharacters } = useMarvelService();
 
   useEffect(() => {
-    if (!isPending) {
-      onRequest();
-    }
+    onRequest();
   }, []);
 
   const onRequest = offset => {
-    isPending = true;
     setNewItemsLoading(true);
-    getAllCharacters(offset).then(onCharLoaded).catch(onError);
+
+    getAllCharacters(offset)
+      .then(onCharLoaded)
+      .then(() => setProcess(processTypes.confirmed))
+      .catch(onError)
   };
 
   const onCharLoaded = newChars => {
-    isPending = false;
     let ended = false;
 
     if (newChars.length < 9) {
@@ -47,8 +46,7 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
     setNewItemsLoading(false);
   };
 
-  const isError = error ? <Error /> : null;
-  const isRender = !error ? (
+  const getView = () => (
     <CharItems
       chars={chars}
       onCharSelected={id => {
@@ -56,11 +54,20 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
       }}
       selectedCharId={selectedCharId}
     />
-  ) : null;
+  );
+
+  const setData = {
+    process,
+    data: chars,
+    ViewComponent: getView,
+    uniqueLoadingBehavior: () => {
+      return newItemsLoading ? getView() : <Spinner />;
+    }
+  };
 
   return (
     <div className="char__list">
-      {isError || isRender}
+      { setContent(setData) }
       <button
         onClick={() => {
           onRequest(offset);
@@ -71,7 +78,7 @@ const CharList = ({ onCharSelected, selectedCharId }) => {
         style={{ display: charEnded ? 'none' : 'block' }}
       >
         <p className="inner">
-          {loading || newItemsLoading ? `loading...` : `load more`}
+          {process === processTypes.loading || newItemsLoading ? `loading...` : `load more`}
         </p>
       </button>
     </div>

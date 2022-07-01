@@ -7,12 +7,14 @@ import useMarvelService from '../../../services/MarvelService';
 import Spinner from '../../spinner/Spinner';
 import Error from '../../errorMessage/Error';
 import AppBanner from '../../appBanner/AppBanner';
+import { processTypes } from '../../../types/types';
+import { setContent } from '../../../utils/setContent';
 
 const SingleComicPage = () => { 
   const { id } = useParams();
   const [comic, setComic] = useState(null);
 
-  const { loading, error, getComic, clearError } = useMarvelService();
+  const { process, setProcess, getComic, clearError } = useMarvelService();
 
   useEffect(() => {
     updateComic();
@@ -21,24 +23,22 @@ const SingleComicPage = () => {
   const updateComic = () => {
     clearError();
 
-    getComic(id).then(onComicLoaded);
+    getComic(id).then(onComicLoaded).then(() => setProcess(processTypes.confirmed));
   };
 
   const onComicLoaded = comic => {
     setComic(comic);
   };
 
-  const isError = error ? <Error /> : null;
-  const isSpinner = loading ? <Spinner /> : null;
-  const isRender = !(loading || error || !comic) ? (
-    <View comic={comic} />
-  ) : null;
-
-  return isError || isSpinner || isRender;
+  return setContent({
+    process,
+    data: comic,
+    ViewComponent: View,
+  });
 }
 
-const View = ({ comic }) => {
-  const { title, description, pageCount, thumbnail, languages, price } = comic;
+const View = ({ data }) => {
+  const { title, description, pageCount, thumbnail, languages, price } = data;
 
   return (
     <>

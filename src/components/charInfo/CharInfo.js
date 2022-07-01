@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
-import Error from '../errorMessage/Error';
-import Skeleton from '../skeleton/Skeleton';
+import { processTypes } from '../../types/types';
 import "./charInfo.scss";
+import { setContent } from '../../utils/setContent';
 
 const CharInfo = ({ charId }) => {
   const [char, setChar] = useState();
   const [wait, setWait] = useState();
 
-  const { loading, error, getCharacter, clearError } = useMarvelService();
+  const {
+    process,
+    setProcess,
+    getCharacter,
+    clearError
+  } = useMarvelService();
 
   useEffect(() => {
     updateChar()
@@ -24,7 +28,8 @@ const CharInfo = ({ charId }) => {
     if (!charId) { return; }
 
     getCharacter(charId)
-      .then(onCharLoaded);
+      .then(onCharLoaded)
+      .then(() => { setProcess(processTypes.confirmed) })
   }
 
   const onCharLoaded = char => {
@@ -32,27 +37,19 @@ const CharInfo = ({ charId }) => {
     setWait(false);
   };
 
-  const isSkeleton = !(char || loading || error) ? <Skeleton /> : null;
-  const isError = error ? <Error /> : null;
-  const isSpinner = loading ? <Spinner /> : null;
-  const isRender = !(loading || error || !char) ? <View char={char} /> : null;
-
   return (
     <div className={`char__info ${wait ? 'opacity' : ''}`}>
-      {isSkeleton || isError || isSpinner || isRender}
+      { setContent({ process, data: char, ViewComponent: View }) }
     </div>
   );
 }
 
-const View = ({ char }) => {
-  const { thumbnail, name, homepage, wiki, description, comics } = char;
+const View = ({ data }) => {
+  const { thumbnail, name, homepage, wiki, description, comics } = data;
 
   let imgStyle = { objectFit: 'cover' };
 
-  if (
-    thumbnail ===
-    'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
-  ) {
+  if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
     imgStyle = { objectFit: 'contain' };
   }
 

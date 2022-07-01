@@ -12,10 +12,11 @@ import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/Error';
 
 import './charSearchForm.scss';
+import { processTypes } from '../../types/types';
 
 const CharSearchForm = () => {
   const [char, setChar] = useState(null);
-  const { loading, error, getCharacterByName, clearError } = useMarvelService();
+  const { process, setProcess,  getCharacterByName, clearError } = useMarvelService();
 
   const onCharLoaded = char => {
     setChar(char);
@@ -24,10 +25,12 @@ const CharSearchForm = () => {
   const updateChar = name => {
     clearError();
 
-    getCharacterByName(name).then(onCharLoaded);
+    getCharacterByName(name)
+      .then(onCharLoaded)
+      .then(() => setProcess(processTypes.confirmed));
   };
 
-  const errorMessage = error ? (
+  const errorMessage = process === processTypes.error ? (
     <div className="char__search-critical-error">
       <ErrorMessage />
     </div>
@@ -50,6 +53,8 @@ const CharSearchForm = () => {
       The character was not found. Check the name and try again.
     </div>
   );
+
+  const isLoading = process === processTypes.loading;
 
   return (
     <div className="char__search-form">
@@ -77,8 +82,8 @@ const CharSearchForm = () => {
             />
             <button
               type="submit"
-              className={`button button__main ${loading ? 'opacity' : ''}`}
-              disabled={loading}
+              className={`button button__main ${isLoading ? 'opacity' : ''}`}
+              disabled={isLoading}
             >
               <p className="inner">find</p>
             </button>
@@ -93,7 +98,6 @@ const CharSearchForm = () => {
       </Formik>
 
       {results}
-
       {errorMessage}
     </div>
   );

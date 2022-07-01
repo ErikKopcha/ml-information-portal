@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import './randomChar.scss';
 import useMarvelService from '../../services/MarvelService';
 import mjolnir from '../../resources/img/mjolnir.png';
-import Spinner from '../spinner/Spinner';
-import Error from '../errorMessage/Error';
+import { processTypes } from '../../types/types';
+import { setContent } from '../../utils/setContent';
 
 const RandomChar = () => {
   const [char, setChar] = useState({
@@ -16,19 +16,15 @@ const RandomChar = () => {
 
   const [wait, setWait] = useState(false);
 
-  const { loading, error, getCharacter, clearError } = useMarvelService();
-
-  // fix useEffect (react 18), state vrs is not working
-  let isPending = false;
+  const { process, setProcess, getCharacter, clearError } = useMarvelService();
 
   useEffect(() => {
-    if (!isPending) updateChar();
+    updateChar();
 
     return () => {};
   }, []);
 
   const onCharLoaded = char => {
-    isPending = false;
     setChar(char);
     setWait(false);
   };
@@ -38,23 +34,17 @@ const RandomChar = () => {
   };
 
   const updateChar = () => {
-    isPending = true;
-
     clearError();
     setWait(true);
 
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
 
-    getCharacter(id).then(onCharLoaded).catch(onError);
+    getCharacter(id).then(onCharLoaded).then(() => setProcess(processTypes.confirmed)).catch(onError);
   };
 
-  const isLoading = loading || wait ? <Spinner /> : null;
-  const isError = error ? <Error /> : null;
-  const isRender = !error && !loading && !wait ? <View char={char} /> : null;
-
   return (
-    <div className={`randomchar ${loading || wait ? `opacity` : ''}`}>
-      {isLoading || isError || isRender}
+    <div className={`randomchar ${process === processTypes.loading || wait ? `opacity` : ''}`}>
+      { setContent({ process, data: char, ViewComponent: View }) }
 
       <div className="randomchar__static">
         <p className="randomchar__title">
@@ -72,17 +62,14 @@ const RandomChar = () => {
   );
 };
 
-const View = char => {
+const View = data => {
   const {
-    char: { name, description, thumbnail, homepage, wiki },
-  } = char;
+    data: { name, description, thumbnail, homepage, wiki },
+  } = data;
 
   let imgStyle = { objectFit: 'cover' };
 
-  if (
-    thumbnail ===
-    'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
-  ) {
+  if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
     imgStyle = { objectFit: 'contain' };
   }
 

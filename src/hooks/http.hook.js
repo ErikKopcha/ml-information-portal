@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
+import { processTypes } from '../types/types';
 
 const useHttp = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [process, setProcess] = useState(processTypes.waiting);
 
   /**
    * @param { Object } options
@@ -21,7 +21,7 @@ const useHttp = () => {
       },
     } = options;
 
-    setLoading(true); 
+    setProcess(processTypes.loading);
 
     try {
       const response = await fetch(url, { method, headers, body });
@@ -30,24 +30,26 @@ const useHttp = () => {
 
       const data = await response.json();
 
-      setLoading(false);
+      setProcess(processTypes.confirmed);
+
       return data;
     } catch (e) {
-      setLoading(false);
-      setError(e.message);
+      setProcess(processTypes.error);
       
       throw e;
     }
   }, []);
 
-  const clearError = useCallback(() => setError(null), []);
+  const clearError = useCallback(() => {
+    setProcess(processTypes.waiting)
+  }, []);
 
   return {
-    loading,
-    error,
+    process,
+    setProcess,
     request,
-    clearError
-  }
+    clearError,
+  };
 };
 
 export { useHttp }
