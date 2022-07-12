@@ -42,7 +42,9 @@ const ComicsList = () => {
     return Math.random() * (max - min) + min;
   };
 
-  const getComicsList = ({ data }) => {
+  const getComicsList = (options) => {
+    const { data = comicsList } = options;
+
     return (
       <ul className="comics__grid">
         <TransitionGroup component={null}>

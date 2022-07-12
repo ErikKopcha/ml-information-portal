@@ -88,12 +88,20 @@ const useMarvelService = () => {
       textObjects,
     } = comicsItem;
 
+    let fixedDescription = '';
+
+    try {
+      fixedDescription = description.split('$')[0]
+    } catch (e) {
+      fixedDescription = description;
+    }
+
     return {
       id,
       title,
       price: prices[0]?.price || 0,
       thumbnail: `${thumbnail.path}.${thumbnail.extension}`,
-      description,
+      description: fixedDescription,
       pageCount,
       languages: textObjects[0]?.language || 'en-us',
     };

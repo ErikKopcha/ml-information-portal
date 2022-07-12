@@ -4,8 +4,6 @@ import './singleComicPage.scss';
 import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useMarvelService from '../../../services/MarvelService';
-import Spinner from '../../spinner/Spinner';
-import Error from '../../errorMessage/Error';
 import AppBanner from '../../appBanner/AppBanner';
 import { processTypes } from '../../../types/types';
 import { setContent } from '../../../utils/setContent';
